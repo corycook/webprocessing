@@ -3,18 +3,21 @@
     let canvas = document.querySelector('canvas');
     let context = canvas && canvas.getContext('2d');
 
-    const colorString = (r, g = r, b = r, a = 1) => {
+    const color = (r, g = r, b = r, a = 1) => {
         const f = v => Math.floor(v);
         return `rgba(${f(r)}, ${f(g)}, ${f(b)}, ${a})`;
     };
 
     exports.fill = (r, g = r, b = r, a = 1) => {
-        Reflect.set(context, 'fillStyle', colorString(r, g, b, a));
+        context.fillStyle = color(r, g, b, a);
     };
 
     exports.stroke = (r, g = r, b = r, a = 1) => {
-        Reflect.set(context, 'strokeStyle', colorString(r, g, b, a));
+        context.strokeStyle = color(r, g, b, a);
     };
+
+    exports.width = 300;
+    exports.height = 150;
 
     exports.size = (w, h) => {
         exports.width = w;
@@ -36,8 +39,8 @@
                     context = canvas.getContext('2d');
                 }
                 canvas.addEventListener('mousemove', (e) => {
-                    exports.mouseX = e.clientX;
-                    exports.mouseY = e.clientY;
+                    exports.mouseX = e.offsetX;
+                    exports.mouseY = e.offsetY;
                     exports.isMousePressed = e.buttons & 1 === 1;
                 });
                 window.addEventListener('mousedown', (e) => {
@@ -75,7 +78,7 @@
 
     exports.background = (r, g = r, b = r, a = 1) => {
         const lastFill = context.fillStyle;
-        context.fillStyle = colorString(r, g, b, a);
+        context.fillStyle = color(r, g, b, a);
         context.fillRect(0, 0, width, height);
         context.fillStyle = lastFill;
     };
