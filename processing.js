@@ -8,16 +8,35 @@
         return `rgba(${f(r)}, ${f(g)}, ${f(b)}, ${a})`;
     };
 
+    exports.width = 300;
+    exports.height = 150;
+    exports.PI = Math.PI;
+    exports.TWO_PI = Math.PI * 2;
+    exports.mouseX = 0;
+    exports.mouseY = 0;
+    exports.isMousePressed = false;
+    exports.CENTER = 0;
+    exports.LEFT = 1;
+    exports.RIGHT = 2;
+    exports.TOP = 4;
+    exports.BASELINE = 5;
+    exports.BOTTOM = 6;
+
     exports.fill = (r, g = r, b = r, a = 1) => {
         context.fillStyle = color(r, g, b, a);
+    };
+
+    exports.noFill = () => {
+        context.fillStyle = 'transparent';
     };
 
     exports.stroke = (r, g = r, b = r, a = 1) => {
         context.strokeStyle = color(r, g, b, a);
     };
 
-    exports.width = 300;
-    exports.height = 150;
+    exports.noStroke = () => {
+        context.strokeStyle = 'transparent';
+    };
 
     exports.size = (w, h) => {
         exports.width = w;
@@ -90,13 +109,18 @@
         return ((max - min) * Math.random()) + min;
     };
 
-    exports.PI = Math.PI;
-    exports.TWO_PI = Math.PI * 2;
-
     exports.ellipse = (x, y, w, h) => {
         context.beginPath();
         context.ellipse(x, y, Math.floor(w / 2), Math.floor(h / 2), 0, 0, exports.TWO_PI);
         context.fill();
+        context.stroke();
+    };
+
+    exports.arc = (x, y, w, h, startAngle, endAngle) => {
+        context.beginPath();
+        context.ellipse(x, y, Math.floor(w / 2), Math.floor(h / 2), 0, startAngle, endAngle);
+        context.fill();
+        context.stroke();
     };
 
     const font = {
@@ -111,10 +135,27 @@
 
     exports.text = (str, x, y) => {
         context.fillText(str, x, y);
-    }
+    };
 
-    exports.mouseX = 0;
-    exports.mouseY = 0;
-    exports.isMousePressed = false;
+    const TEXT_ALIGNX = {
+        [exports.LEFT]: 'left',
+        [exports.CENTER]: 'center',
+        [exports.RIGHT]: 'right',
+    };
+
+    const TEXT_ALIGNY = {
+        [exports.TOP]: 'top',
+        [exports.CENTER]: 'middle',
+        [exports.BASELINE]: 'alphabetic',
+        [exports.BOTTOM]: 'bottom',
+    };
+
+    exports.textAlign = (alignX, alignY) => {
+        context.textAlign = TEXT_ALIGNX[alignX];
+        if (alignY !== undefined) {
+            context.textBaseline = TEXT_ALIGNY[alignY];
+            console.log(TEXT_ALIGNY[alignY]);
+        }
+    };
 
 }());
