@@ -1,16 +1,19 @@
-
-
 (function () {
     const exports = window;
-    const canvas = document.querySelector('canvas');
-    const context = canvas.getContext('2d');
+    let canvas = document.querySelector('canvas');
+    let context = canvas && canvas.getContext('2d');
+
+    const colorString = (r, g = r, b = r, a = 1) => {
+        const f = v => Math.floor(v);
+        return `rgba(${f(r)}, ${f(g)}, ${f(b)}, ${a})`;
+    };
 
     exports.fill = (r, g = r, b = r, a = 1) => {
-        context.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+        Reflect.set(context, 'fillStyle', colorString(r, g, b, a));
     };
 
     exports.stroke = (r, g = r, b = r, a = 1) => {
-        context.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+        Reflect.set(context, 'strokeStyle', colorString(r, g, b, a));
     };
 
     exports.size = (w, h) => {
@@ -25,7 +28,24 @@
         context.strokeRect(x, y, width, height);
     };
 
-    exports.setup = (fn) => fn();
+    exports.setup = (fn) => {
+        if (!canvas) {
+            canvas = document.querySelector('canvas');
+            context = canvas.getContext('2d');
+        }
+        canvas.addEventListener('mousemove', (e) => {
+            exports.mouseX = e.clientX;
+            exports.mouseY = e.clientY;
+            exports.isMousePressed = e.buttons & 1 === 1;
+        });
+        window.addEventListener('mousedown', (e) => {
+            exports.isMousePressed = true;
+        });
+        window.addEventListener('mouseup', (e) => {
+            exports.isMousePressed = false;
+        });
+        fn();
+    }
 
     exports.draw = (fn) => {
         requestAnimationFrame(() => {
@@ -40,13 +60,14 @@
 
     exports.mouseMoved = (fn) => {
         window.addEventListener('mousemove', fn);
-    }
+    };
 
     exports.background = (r, g = r, b = r, a = 1) => {
-        const oldFill = context.fillStyle;
-        context.fillStyle = `rgba(${r},${g},${b},${a})`;
+        const f = v => Math.floor(v);
+        const lastFill = context.fillStyle;
+        context.fillStyle = colorString(r, g, b, a);
         context.fillRect(0, 0, width, height);
-        context.fillStyle = oldFill;
+        context.fillStyle = lastFill;
     };
 
     exports.println = (...args) => console.log(args);
@@ -54,23 +75,10 @@
         const min = !maximum ? 0 : minimum;
         const max = maximum || minimum;
         return ((max - min) * Math.random()) + min;
-    }
+    };
 
     exports.mouseX = 0;
     exports.mouseY = 0;
     exports.isMousePressed = false;
 
-    exports.stroke(255);
-    exports.fill(0);
-    canvas.addEventListener('mousemove', (e) => {
-        exports.mouseX = e.clientX;
-        exports.mouseY = e.clientY;
-        exports.isMousePressed = e.buttons & 1 === 1;
-    });
-    window.addEventListener('mousedown', (e) => {
-        exports.isMousePressed = true;
-    });
-    window.addEventListener('mouseup', (e) => {
-        exports.isMousePressed = false;
-    });
 }());

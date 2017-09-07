@@ -1,23 +1,17 @@
-
 (function () {
-
     setup(() => {
         size(500, 500);
+        fill(255);
     });
 
-    let color = [];
+    let color = [255];
+    let counter = 0;
 
     draw(() => {
-        background(100, 150, 100);
-        fill(...color);
-        if (isMousePressed) {
-            rect(mouseX, mouseY, 100, 100);
-        }
+        background(...color);
     });
 
-    mousePressed(() => {
-        color = [mouseX % 255, mouseY % 255, random(255)];
-        console.log(color);
+    mouseMoved(() => {
+        color = [(mouseX / width) * 255, (mouseY / height) * 255, (counter += 10) % 255];
     });
-
 }());
