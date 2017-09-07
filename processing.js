@@ -63,7 +63,6 @@
     };
 
     exports.background = (r, g = r, b = r, a = 1) => {
-        const f = v => Math.floor(v);
         const lastFill = context.fillStyle;
         context.fillStyle = colorString(r, g, b, a);
         context.fillRect(0, 0, width, height);
@@ -75,6 +74,15 @@
         const min = !maximum ? 0 : minimum;
         const max = maximum || minimum;
         return ((max - min) * Math.random()) + min;
+    };
+
+    exports.PI = Math.PI;
+    exports.TWO_PI = Math.PI * 2;
+
+    exports.ellipse = (x, y, w, h) => {
+        context.beginPath();
+        context.ellipse(x, y, Math.floor(w / 2), Math.floor(h / 2), 0, 0, exports.TWO_PI);
+        context.fill();
     };
 
     exports.mouseX = 0;
