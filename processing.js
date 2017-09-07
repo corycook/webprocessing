@@ -154,7 +154,6 @@
         context.textAlign = TEXT_ALIGNX[alignX];
         if (alignY !== undefined) {
             context.textBaseline = TEXT_ALIGNY[alignY];
-            console.log(TEXT_ALIGNY[alignY]);
         }
     };
 

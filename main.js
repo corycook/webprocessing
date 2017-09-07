@@ -1,9 +1,8 @@
 setup(() => {
-    size(500, 500);
+    size(window.innerWidth, window.innerHeight);
     textSize(40);
-    stroke(255);
     textAlign(CENTER, CENTER);
-    noFill();
+    stroke(255);
 });
 
 let color = [0];
