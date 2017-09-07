@@ -28,29 +28,40 @@
         context.strokeRect(x, y, width, height);
     };
 
-    exports.setup = (fn) => {
-        if (!canvas) {
-            canvas = document.querySelector('canvas');
-            context = canvas.getContext('2d');
+    const onsetup = new Promise((resolve) => {
+        exports.setup = (fn) => {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (!canvas) {
+                    canvas = document.querySelector('canvas');
+                    context = canvas.getContext('2d');
+                }
+                canvas.addEventListener('mousemove', (e) => {
+                    exports.mouseX = e.clientX;
+                    exports.mouseY = e.clientY;
+                    exports.isMousePressed = e.buttons & 1 === 1;
+                });
+                window.addEventListener('mousedown', (e) => {
+                    exports.isMousePressed = true;
+                });
+                window.addEventListener('mouseup', (e) => {
+                    exports.isMousePressed = false;
+                });
+                fn();
+                resolve();
+            });
         }
-        canvas.addEventListener('mousemove', (e) => {
-            exports.mouseX = e.clientX;
-            exports.mouseY = e.clientY;
-            exports.isMousePressed = e.buttons & 1 === 1;
+    });
+
+    const drawloop = (fn) => {
+        requestAnimationFrame(() => {
+            fn();
+            drawloop(fn);
         });
-        window.addEventListener('mousedown', (e) => {
-            exports.isMousePressed = true;
-        });
-        window.addEventListener('mouseup', (e) => {
-            exports.isMousePressed = false;
-        });
-        fn();
     }
 
     exports.draw = (fn) => {
-        requestAnimationFrame(() => {
-            fn();
-            exports.draw(fn);
+        onsetup.then(() => {
+            drawloop(fn);
         });
     };
 
@@ -84,6 +95,20 @@
         context.ellipse(x, y, Math.floor(w / 2), Math.floor(h / 2), 0, 0, exports.TWO_PI);
         context.fill();
     };
+
+    const font = {
+        family: 'serif',
+        size: '12px',
+    };
+
+    exports.textSize = (size) => {
+        font.size = `${size}px`;
+        context.font = `${font.size} ${font.family}`;
+    };
+
+    exports.text = (str, x, y) => {
+        context.fillText(str, x, y);
+    }
 
     exports.mouseX = 0;
     exports.mouseY = 0;
