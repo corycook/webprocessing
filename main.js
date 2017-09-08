@@ -1,27 +1,12 @@
-setup(() => {
-    size(window.innerWidth, window.innerHeight);
-    textSize(40);
-    textAlign(CENTER, CENTER);
-    stroke(255);
-});
+const color = [0, 0, 0];
 
-let color = [0];
-let counter = 0;
+setup(() => {
+  size(window.innerWidth, window.innerHeight);
+});
 
 draw(() => {
-    background(...color);
-    noFill();
-    if (isMousePressed) {
-        ellipse(mouseX, mouseY, 200, 200);
-    }
-    const time = new Date();
-    arc(width / 2, height / 2, 160, 160, 0, TWO_PI * (time.getSeconds() / 60));
-    arc(width / 2, height / 2, 180, 180, 0, TWO_PI * (time.getMinutes() / 60));
-    arc(width / 2, height / 2, 200, 200, 0, TWO_PI * (time.getHours() / 24));
-    fill(255);
-    text(`${time.getHours()}:${time.getMinutes()}`, width / 2, height / 2);
-});
-
-mouseMoved(() => {
-    color = [(mouseX / width) * 155 + 100, 150, (mouseY / height) * 155 + 100];
+  const ix = floor(random(3));
+  color[ix]++;
+  stroke(...color);
+  line(floor(random(width)), floor(random(height)), floor(random(width)), floor(random(height)));
 });

@@ -8,19 +8,22 @@
         return `rgba(${f(r)}, ${f(g)}, ${f(b)}, ${a})`;
     };
 
-    exports.width = 300;
-    exports.height = 150;
-    exports.PI = Math.PI;
-    exports.TWO_PI = Math.PI * 2;
-    exports.mouseX = 0;
-    exports.mouseY = 0;
-    exports.isMousePressed = false;
-    exports.CENTER = 0;
-    exports.LEFT = 1;
-    exports.RIGHT = 2;
-    exports.TOP = 4;
     exports.BASELINE = 5;
     exports.BOTTOM = 6;
+    exports.CENTER = 0;
+    exports.LEFT = 1;
+    exports.PI = Math.PI;
+    exports.RIGHT = 2;
+    exports.TOP = 4;
+    exports.TWO_PI = Math.PI * 2;
+    
+    exports.height = 150;
+    exports.isMousePressed = false;
+    exports.mouseX = 0;
+    exports.mouseY = 0;
+    exports.width = 300;
+
+    exports.floor = (n) => Math.floor(n);
 
     exports.fill = (r, g = r, b = r, a = 1) => {
         context.fillStyle = color(r, g, b, a);
@@ -120,6 +123,15 @@
         context.beginPath();
         context.ellipse(x, y, Math.floor(w / 2), Math.floor(h / 2), 0, startAngle, endAngle);
         context.fill();
+        context.stroke();
+    };
+
+    exports.line = (x1, y1, x2, y2) => {
+        const lastFill = context.fillStyle;
+        exports.noFill();
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
         context.stroke();
     };
 
